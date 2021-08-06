@@ -305,7 +305,7 @@ func (s *Server) handleItem(c *router.Context) {
 
 func (s *Server) handleItemList(c *router.Context) {
 	if c.Req.Method == "GET" {
-		perPage := 20
+		perPage := 100
 		query := c.Req.URL.Query()
 
 		filter := storage.ItemFilter{}
@@ -334,7 +334,7 @@ func (s *Server) handleItemList(c *router.Context) {
 			items = items[:perPage]
 		}
 		c.JSON(http.StatusOK, map[string]interface{}{
-			"list": items,
+			"list":     items,
 			"has_more": hasMore,
 		})
 	} else if c.Req.Method == "PUT" {
