@@ -185,6 +185,16 @@ var vm = new Vue({
     api.feeds.list_errors().then(function(errors) {
       vm.feed_errors = errors
     })
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const setColorScheme = e => {
+      if (e.matches) {
+        this.theme.name = "night"
+      } else {
+        this.theme.name = "light"
+      }
+    }
+    setColorScheme(darkModeMediaQuery)
+    darkModeMediaQuery.addListener(setColorScheme)
   },
   data: function() {
     var s = app.settings
