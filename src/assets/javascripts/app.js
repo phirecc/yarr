@@ -335,14 +335,6 @@ var vm = new Vue({
 
       api.items.get(newVal).then(function(item) {
         this.itemSelectedDetails = item
-        if (this.itemSelectedDetails.status == 'unread') {
-          api.items.update(this.itemSelectedDetails.id, {status: 'read'}).then(function() {
-            this.feedStats[this.itemSelectedDetails.feed_id].unread -= 1
-            var itemInList = this.items.find(function(i) { return i.id == item.id })
-            if (itemInList) itemInList.status = 'read'
-            this.itemSelectedDetails.status = 'read'
-          }.bind(this))
-        }
       }.bind(this))
     },
     'itemSearch': debounce(function(newVal) {
