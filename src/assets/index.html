@@ -15,6 +15,21 @@
 </head>
 <body class="theme-{% .settings.theme_name %}">
     <div id="app" class="d-flex" :class="{'feed-selected': feedSelected !== null, 'item-selected': itemSelected !== null}" v-cloak>
+        <div v-if="fuzzyEnabled" id="fuzzyFinder">
+            <div style="height: 100%;">
+                <input id="fuzzySearch" autofocus style="width: 100%;" type="" class="d-block toolbar-search" v-model="fuzzySearchQuery" @keydown.enter="$event.target.blur()">
+                <div style="background-color: white; overflow: auto; height: 100%;">
+                    <label class="selectgroup" v-for="feed in fuzzyFeeds">
+                        <input type="radio" name="feed" :value="'feed:'+feed.id" v-model="feedSelected">
+                        <div class="selectgroup-label d-flex align-items-center w-100">
+                            <span class="icon mr-2" v-if="!feed.has_icon">{% inline "rss.svg" %}</span>
+                            <span class="icon mr-2" v-else><img :src="'./api/feeds/'+feed.id+'/icon'" alt="" loading="lazy"></span>
+                            <span class="flex-fill text-left text-truncate">{{ feed.title }}</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
         <!-- feed list -->
         <div id="col-feed-list" class="vh-100 position-relative d-flex flex-column border-right flex-shrink-0" :style="{width: feedListWidth+'px'}">
             <drag :width="feedListWidth" @resize="resizeFeedList"></drag>

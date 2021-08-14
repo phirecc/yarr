@@ -206,6 +206,9 @@ var vm = new Vue({
       'filterSelected': s.filter,
       'folders': [],
       'feeds': [],
+      'fuzzyFeeds': [],
+      'fuzzyEnabled': false,
+      'fuzzySearchQuery': '',
       'feedSelected': s.feed,
       'feedListWidth': s.feed_list_width || 300,
       'feedNewChoice': [],
@@ -320,6 +323,7 @@ var vm = new Vue({
       this.computeStats()
     },
     'feedSelected': function(newVal, oldVal) {
+      this.fuzzyEnabled = false
       if (oldVal === undefined) return  // do nothing, initial setup
       api.settings.update({feed: newVal}).then(this.refreshItems.bind(this, false))
       this.itemSelected = null
@@ -340,6 +344,16 @@ var vm = new Vue({
     'itemSearch': debounce(function(newVal) {
       this.refreshItems()
     }, 500),
+    'fuzzySearchQuery': function(newVal, oldVal) {
+      vm.fuzzyFeeds = []
+      // let r = new RegExp(newVal, "i")
+      this.feeds.forEach(feed => {
+        // if (feed.title.match(r)) {
+        if (feed.title.toUpperCase().includes(newVal.toUpperCase())) {
+          this.fuzzyFeeds.push(feed)
+        }
+      })
+    },
     'itemSortNewestFirst': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
       api.settings.update({sort_newest_first: newVal}).then(vm.refreshItems.bind(this, false))

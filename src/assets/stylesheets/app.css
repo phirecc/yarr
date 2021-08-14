@@ -506,6 +506,18 @@ a,
   margin: 0 !important;
 }
 
+#fuzzyFinder {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  width: 30%;
+  top: 20%;
+  height: 50%;
+  z-index: 7;
+}
+
 /* responsive layout
 
    tablet:

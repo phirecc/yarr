@@ -144,6 +144,18 @@ var shortcutFunctions = {
   showStarred() {
     vm.filterSelected = 'starred'
   },
+  openFuzzyFinder() {
+    if (vm.fuzzyEnabled) {
+      return
+    }
+    console.log("hello world!")
+    vm.fuzzySearchQuery = ''
+    vm.fuzzyFeeds = vm.feeds
+    vm.fuzzyEnabled = true
+    Vue.nextTick().then(function() {
+      document.querySelector('#fuzzySearch').focus()
+    })
+  }
 }
 
 // If you edit, make sure you update the help modal
@@ -163,6 +175,7 @@ var keybindings = {
   "1": shortcutFunctions.showUnread,
   "2": shortcutFunctions.showStarred,
   "3": shortcutFunctions.showAll,
+  "p": shortcutFunctions.openFuzzyFinder,
 }
 
 function isTextBox(element) {
