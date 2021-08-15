@@ -2,6 +2,15 @@
   display: none !important;
 }
 
+label[selected=true] {
+  background-color: green !important;
+}
+
+#fuzzySearchResults .selectgroup input:checked + .selectgroup-label {
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
 body {
   font-size: 15px !important;
   overscroll-behavior: none;

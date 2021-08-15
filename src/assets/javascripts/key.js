@@ -151,6 +151,7 @@ var shortcutFunctions = {
     vm.fuzzySearchQuery = ''
     vm.fuzzyFeeds = vm.feeds
     vm.fuzzyEnabled = true
+    vm.fuzzyItemSelected = -1
     Vue.nextTick().then(function() {
       document.querySelector('#fuzzySearch').focus()
     })
@@ -189,6 +190,35 @@ function isTextBox(element) {
 }
 
 document.addEventListener('keydown',function(event) {
+  if (vm.fuzzyEnabled) {
+    if (event.key == "ArrowUp" || event.key == "ArrowDown") {
+      let prev = vm.fuzzyItemSelected
+      let delta = event.key == "ArrowUp" ? -1 : 1
+      event.preventDefault()
+      vm.fuzzyItemSelected += delta
+      let searchResults = document.querySelectorAll("#fuzzySearchResults > label")
+      if (prev > -1) {
+        searchResults[prev].setAttribute("selected", false)
+      }
+      if (vm.fuzzyItemSelected <= -1) {
+        vm.fuzzyItemSelected = -1
+        document.querySelector('#fuzzySearch').focus()
+      } else {
+        document.querySelector('#fuzzySearch').blur()
+        if (vm.fuzzyItemSelected >= searchResults.length) {
+          vm.fuzzyItemSelected = 0
+        }
+        searchResults[vm.fuzzyItemSelected].setAttribute("selected", true)
+        searchResults[vm.fuzzyItemSelected].scrollIntoViewIfNeeded()
+        console.log(vm.fuzzyItemSelected)
+      }
+    }
+    else if (event.key == "Enter") {
+      if (vm.fuzzyItemSelected == -1) vm.fuzzyItemSelected = 0
+      let searchResults = document.querySelectorAll("#fuzzySearchResults > label")
+      searchResults[vm.fuzzyItemSelected].click()
+    }
+  }
   // Ignore while focused on text or
   // when using modifier keys (to not clash with browser behaviour)
   if (isTextBox(event.target) || event.metaKey || event.ctrlKey) {

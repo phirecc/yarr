@@ -209,6 +209,7 @@ var vm = new Vue({
       'fuzzyFeeds': [],
       'fuzzyEnabled': false,
       'fuzzySearchQuery': '',
+      'fuzzyItemSelected': -1,
       'feedSelected': s.feed,
       'feedListWidth': s.feed_list_width || 300,
       'feedNewChoice': [],
@@ -345,6 +346,7 @@ var vm = new Vue({
       this.refreshItems()
     }, 500),
     'fuzzySearchQuery': function(newVal, oldVal) {
+      vm.fuzzyItemSelected = -1
       vm.fuzzyFeeds = []
       // let r = new RegExp(newVal, "i")
       this.feeds.forEach(feed => {
