@@ -148,7 +148,6 @@ var shortcutFunctions = {
     if (vm.fuzzyEnabled) {
       return
     }
-    console.log("hello world!")
     vm.fuzzySearchQuery = ''
     vm.fuzzyFeeds = vm.feeds
     vm.fuzzyEnabled = true
