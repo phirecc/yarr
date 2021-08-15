@@ -3,7 +3,8 @@
 }
 
 label[selected=true] {
-  background-color: green !important;
+  color: #fff;
+  background-color: #0080d4 !important;
 }
 
 #fuzzySearchResults .selectgroup input:checked + .selectgroup-label {
