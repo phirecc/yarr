@@ -18,8 +18,8 @@
     <div id="app" class="d-flex" :class="{'feed-selected': feedSelected !== null, 'item-selected': itemSelected !== null}" v-cloak>
         <div v-if="fuzzyEnabled" id="fuzzyFinder">
             <div style="height: 100%;">
-                <input id="fuzzySearch" autofocus style="width: 100%;" type="" class="d-block toolbar-search" v-model="fuzzySearchQuery" @keydown.enter="$event.target.blur()">
-                <div style="background-color: white; overflow: auto; height: 100%;">
+                <input id="fuzzySearch" autofocus style="width: 100%; border-top: 1px solid #dee2e6!important; border-right: 1px solid #dee2e6!important; border-left: 1px solid #dee2e6!important" type="" class="d-block toolbar-search" v-model="fuzzySearchQuery" @keydown.enter="$event.target.blur()">
+                <div id="fuzzySearchResults" style="border: 1px solid #dee2e6!important; background-color: white; overflow: auto; height: 100%;">
                     <label class="selectgroup" v-for="feed in fuzzyFeeds">
                         <input type="radio" name="feed" :value="'feed:'+feed.id" v-model="feedSelected">
                         <div class="selectgroup-label d-flex align-items-center w-100">
