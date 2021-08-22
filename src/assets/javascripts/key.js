@@ -144,6 +144,9 @@ var shortcutFunctions = {
   showStarred() {
     vm.filterSelected = 'starred'
   },
+  unselectFeed() {
+    vm.feedSelected = ""
+  },
   openFuzzyFinder() {
     if (vm.fuzzyEnabled) {
       return
@@ -175,6 +178,7 @@ var keybindings = {
   "1": shortcutFunctions.showUnread,
   "2": shortcutFunctions.showStarred,
   "3": shortcutFunctions.showAll,
+  "0": shortcutFunctions.unselectFeed,
   "p": shortcutFunctions.openFuzzyFinder,
 }
 
