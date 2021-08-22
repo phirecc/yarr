@@ -135,6 +135,14 @@ var shortcutFunctions = {
   scrollBackward: function() {
     helperFunctions.scrollContent(-1)
   },
+  scrollTop: function() {
+    var scroll = document.querySelector('.content')
+    scroll.scrollTop = 0
+  },
+  scrollBottom: function() {
+    var scroll = document.querySelector('.content')
+    scroll.scrollTop = scroll.scrollHeight
+  },
   showAll() {
     vm.filterSelected = ''
   },
@@ -175,6 +183,8 @@ var keybindings = {
   "h": shortcutFunctions.previousFeed,
   "f": shortcutFunctions.scrollForward,
   "b": shortcutFunctions.scrollBackward,
+  "g": shortcutFunctions.scrollTop,
+  "G": shortcutFunctions.scrollBottom,
   "1": shortcutFunctions.showUnread,
   "2": shortcutFunctions.showStarred,
   "3": shortcutFunctions.showAll,
