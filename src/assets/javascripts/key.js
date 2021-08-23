@@ -80,10 +80,10 @@ var helperFunctions = {
     if (!scroll) return
 
     var height = scroll.getBoundingClientRect().height
-    var newpos = scroll.scrollTop + (height - padding) * direction
+    var newpos = scroll.scrollTop + (height/2 - padding) * direction
 
     if (typeof scroll.scrollTo == 'function') {
-      scroll.scrollTo({top: newpos, left: 0, behavior: 'smooth'})
+      scroll.scrollTo({top: newpos, left: 0})
     } else {
       scroll.scrollTop = newpos
     }
