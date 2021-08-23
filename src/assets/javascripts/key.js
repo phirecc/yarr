@@ -123,6 +123,16 @@ var shortcutFunctions = {
   previousItem() {
     helperFunctions.navigateToItem(-1)
   },
+  firstItem() {
+    var scroll = document.querySelector('#item-list-scroll')
+    scroll.firstElementChild.scrollIntoViewIfNeeded()
+    vm.itemSelected = vm.items[0].id
+  },
+  lastItem() {
+    var scroll = document.querySelector('#item-list-scroll')
+    scroll.lastElementChild.scrollIntoViewIfNeeded()
+    vm.itemSelected = vm.items[vm.items.length-1].id
+  },
   nextFeed(){
     helperFunctions.navigateToFeed(+1)
   },
@@ -179,6 +189,8 @@ var keybindings = {
   "/": shortcutFunctions.focusSearch,
   "j": shortcutFunctions.nextItem,
   "k": shortcutFunctions.previousItem,
+  "J": shortcutFunctions.lastItem,
+  "K": shortcutFunctions.firstItem,
   "l": shortcutFunctions.nextFeed,
   "h": shortcutFunctions.previousFeed,
   "f": shortcutFunctions.scrollForward,
