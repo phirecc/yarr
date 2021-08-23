@@ -176,6 +176,9 @@ var shortcutFunctions = {
     Vue.nextTick().then(function() {
       document.querySelector('#fuzzySearch').focus()
     })
+  },
+  goToFeed() {
+    vm.feedSelected = "feed:" + vm.itemSelectedDetails.feed_id
   }
 }
 
@@ -202,6 +205,7 @@ var keybindings = {
   "3": shortcutFunctions.showAll,
   "0": shortcutFunctions.unselectFeed,
   "p": shortcutFunctions.openFuzzyFinder,
+  "d": shortcutFunctions.goToFeed,
 }
 
 function isTextBox(element) {
