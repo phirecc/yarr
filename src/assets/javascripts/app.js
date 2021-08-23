@@ -320,7 +320,6 @@ var vm = new Vue({
     'filterSelected': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
       api.settings.update({filter: newVal}).then(this.refreshItems.bind(this, false))
-      this.itemSelected = null
       this.computeStats()
     },
     'feedSelected': function(newVal, oldVal) {
