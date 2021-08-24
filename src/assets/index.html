@@ -234,6 +234,10 @@
                         <span class="icon mr-1">{% inline "edit.svg" %}</span>
                         Rename
                     </button>
+                    <button class="dropdown-item" @click="toggleFeedReadability(current.feed)">
+                        <span :class="{active: current.feed.readability}" class="icon mr-1">{% inline "book-open.svg" %}</span>
+                        Toggle readability
+                    </button>
                     <div class="dropdown-divider"></div>
                     <header class="dropdown-header">Move to...</header>
                     <button class="dropdown-item"

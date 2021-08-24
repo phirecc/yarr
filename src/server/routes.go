@@ -255,6 +255,11 @@ func (s *Server) handleFeed(c *router.Context) {
 				s.db.RenameFeed(id, title.(string))
 			}
 		}
+		if readability, ok := body["readability"]; ok {
+			if reflect.TypeOf(readability).Kind() == reflect.Bool {
+				s.db.SetReadability(id, readability.(bool))
+			}
+		}
 		if f_id, ok := body["folder_id"]; ok {
 			if f_id == nil {
 				s.db.UpdateFeedFolder(id, nil)

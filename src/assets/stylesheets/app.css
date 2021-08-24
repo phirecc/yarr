@@ -445,6 +445,10 @@ a,
   background-color: #0080d4 !important;
 }
 
+.icon.active {
+  color: #0080d4;
+}
+
 .btn-default:focus,
 .form-control:focus {
   border-color: #0080d4;

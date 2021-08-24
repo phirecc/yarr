@@ -13,6 +13,7 @@ var migrations = []func(*sql.Tx) error{
 	m04_item_podcasturl,
 	m05_move_description_to_content,
 	m06_fill_missing_dates,
+	m07_add_feed_readability,
 }
 
 var maxVersion = int64(len(migrations))
@@ -255,6 +256,14 @@ func m05_move_description_to_content(tx *sql.Tx) error {
 func m06_fill_missing_dates(tx *sql.Tx) error {
 	sql := `
 		update items set date = 0 where date is null;
+	`
+	_, err := tx.Exec(sql)
+	return err
+}
+
+func m07_add_feed_readability(tx *sql.Tx) error {
+	sql := `
+		alter table feeds add column readability boolean not null default false;
 	`
 	_, err := tx.Exec(sql)
 	return err

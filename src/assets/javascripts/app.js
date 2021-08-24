@@ -338,6 +338,9 @@ var vm = new Vue({
 
       api.items.get(newVal).then(function(item) {
         this.itemSelectedDetails = item
+        if (vm.feedsById[vm.itemSelectedDetails.feed_id].readability) {
+          vm.toggleReadability()
+        }
       }.bind(this))
     },
     'itemSearch': debounce(function(newVal) {
@@ -532,6 +535,11 @@ var vm = new Vue({
           feed.title = newTitle
         })
       }
+    },
+    toggleFeedReadability: function(feed) {
+      api.feeds.update(feed.id, {readability: !feed.readability}).then(function() {
+        feed.readability = !feed.readability
+      })
     },
     deleteFeed: function(feed) {
       if (confirm('Are you sure you want to delete ' + feed.title + '?')) {
