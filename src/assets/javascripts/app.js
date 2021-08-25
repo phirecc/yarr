@@ -203,15 +203,15 @@ var vm = new Vue({
   data: function() {
     var s = app.settings
     return {
-      'filterSelected': s.filter,
+      'filterSelected': localStorage.filterSelected || "",
       'folders': [],
       'feeds': [],
       'fuzzyFeeds': [],
       'fuzzyEnabled': false,
       'fuzzySearchQuery': '',
       'fuzzyItemSelected': -1,
-      'feedSelected': s.feed,
-      'feedListWidth': s.feed_list_width || 300,
+      'feedSelected': localStorage.feedSelected || "",
+      'feedListWidth': localStorage.feedListWidth || 300,
       'feedNewChoice': [],
       'feedNewChoiceSelected': '',
       'items': [],
@@ -220,8 +220,8 @@ var vm = new Vue({
       'itemSelectedDetails': null,
       'itemSelectedReadability': '',
       'itemSearch': '',
-      'itemSortNewestFirst': s.sort_newest_first,
-      'itemListWidth': s.item_list_width || 300,
+      'itemSortNewestFirst': localStorage.itemSortNewestFirst || true,
+      'itemListWidth': localStorage.itemListWidth || 300,
 
       'filteredFeedStats': {},
       'filteredFolderStats': {},
@@ -237,9 +237,9 @@ var vm = new Vue({
       'fonts': ['', 'serif', 'monospace'],
       'feedStats': {},
       'theme': {
-        'name': s.theme_name,
-        'font': s.theme_font,
-        'size': s.theme_size,
+        'name': localStorage.themeName || "light",
+        'font': localStorage.themeFont || "",
+        'size': localStorage.themeSize || 1,
       },
       'refreshRate': s.refresh_rate,
       'authenticated': app.authenticated,
@@ -296,11 +296,9 @@ var vm = new Vue({
       deep: true,
       handler: function(theme) {
         document.body.classList.value = 'theme-' + theme.name
-        api.settings.update({
-          theme_name: theme.name,
-          theme_font: theme.font,
-          theme_size: theme.size,
-        })
+        localStorage.themeName = theme.name
+        localStorage.themeFont = theme.font
+        localStorage.themeSize = theme.size
       },
     },
     'feedStats': {
@@ -319,13 +317,15 @@ var vm = new Vue({
     },
     'filterSelected': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
-      api.settings.update({filter: newVal}).then(this.refreshItems.bind(this, false))
+      localStorage.filterSelected = newVal
+      this.refreshItems(false)
       this.computeStats()
     },
     'feedSelected': function(newVal, oldVal) {
       this.fuzzyEnabled = false
       if (oldVal === undefined) return  // do nothing, initial setup
-      api.settings.update({feed: newVal}).then(this.refreshItems.bind(this, false))
+      localStorage.feedSelected = newVal
+      this.refreshItems(false)
       if (this.$refs.itemlist) this.$refs.itemlist.scrollTop = 0
     },
     'itemSelected': function(newVal, oldVal) {
@@ -359,15 +359,15 @@ var vm = new Vue({
     },
     'itemSortNewestFirst': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
-      api.settings.update({sort_newest_first: newVal}).then(vm.refreshItems.bind(this, false))
+      localStorage.itemSortNewestFirst = newVal
     },
     'feedListWidth': debounce(function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
-      api.settings.update({feed_list_width: newVal})
+      localStorage.feedListWidth = newVal
     }, 1000),
     'itemListWidth': debounce(function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
-      api.settings.update({item_list_width: newVal})
+      localStorage.itemListWidth = newVal
     }, 1000),
     'refreshRate': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
