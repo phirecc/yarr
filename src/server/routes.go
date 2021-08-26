@@ -255,6 +255,11 @@ func (s *Server) handleFeed(c *router.Context) {
 				s.db.RenameFeed(id, title.(string))
 			}
 		}
+		if filterRule, ok := body["filterRule"]; ok {
+			if reflect.TypeOf(filterRule).Kind() == reflect.String {
+				s.db.SetFilterRule(id, filterRule.(string))
+			}
+		}
 		if readability, ok := body["readability"]; ok {
 			if reflect.TypeOf(readability).Kind() == reflect.Bool {
 				s.db.SetReadability(id, readability.(bool))

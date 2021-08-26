@@ -14,6 +14,7 @@ var migrations = []func(*sql.Tx) error{
 	m05_move_description_to_content,
 	m06_fill_missing_dates,
 	m07_add_feed_readability,
+	m08_add_feed_filter_rule,
 }
 
 var maxVersion = int64(len(migrations))
@@ -264,6 +265,14 @@ func m06_fill_missing_dates(tx *sql.Tx) error {
 func m07_add_feed_readability(tx *sql.Tx) error {
 	sql := `
 		alter table feeds add column readability boolean not null default false;
+	`
+	_, err := tx.Exec(sql)
+	return err
+}
+
+func m08_add_feed_filter_rule(tx *sql.Tx) error {
+	sql := `
+		alter table feeds add column filter_rule string default "";
 	`
 	_, err := tx.Exec(sql)
 	return err

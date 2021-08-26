@@ -234,6 +234,10 @@
                         <span class="icon mr-1">{% inline "edit.svg" %}</span>
                         Rename
                     </button>
+                    <button class="dropdown-item" @click="setFilterRule(current.feed)">
+                        <span class="icon mr-1">{% inline "filter.svg" %}</span>
+                        Set filter rule
+                    </button>
                     <button class="dropdown-item" @click="toggleFeedReadability(current.feed)">
                         <span :class="{active: current.feed.readability}" class="icon mr-1">{% inline "book-open.svg" %}</span>
                         Toggle readability

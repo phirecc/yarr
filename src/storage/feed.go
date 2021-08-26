@@ -13,6 +13,7 @@ type Feed struct {
 	Link        string  `json:"link"`
 	FeedLink    string  `json:"feed_link"`
 	Readability bool    `json:"readability"`
+	FilterRule  string  `json:"filter_rule"`
 	Icon        *[]byte `json:"icon,omitempty"`
 	HasIcon     bool    `json:"has_icon"`
 }
@@ -71,6 +72,11 @@ func (s *Storage) SetReadability(feedId int64, readability bool) bool {
 	return err == nil
 }
 
+func (s *Storage) SetFilterRule(feedId int64, filterRule string) bool {
+	_, err := s.db.Exec(`update feeds set filter_rule = ? where id = ?`, filterRule, feedId)
+	return err == nil
+}
+
 func (s *Storage) UpdateFeedFolder(feedId int64, newFolderId *int64) bool {
 	_, err := s.db.Exec(`update feeds set folder_id = ? where id = ?`, newFolderId, feedId)
 	return err == nil
@@ -85,7 +91,7 @@ func (s *Storage) ListFeeds() []Feed {
 	result := make([]Feed, 0)
 	rows, err := s.db.Query(`
 		select id, folder_id, title, description, link, feed_link,
-		       ifnull(length(icon), 0) > 0 as has_icon, readability
+		       ifnull(length(icon), 0) > 0 as has_icon, readability, filter_rule
 		from feeds
 		order by title collate nocase
 	`)
@@ -104,6 +110,7 @@ func (s *Storage) ListFeeds() []Feed {
 			&f.FeedLink,
 			&f.HasIcon,
 			&f.Readability,
+			&f.FilterRule,
 		)
 		if err != nil {
 			log.Print(err)
@@ -149,11 +156,11 @@ func (s *Storage) GetFeed(id int64) *Feed {
 	err := s.db.QueryRow(`
 		select
 			id, folder_id, title, link, feed_link,
-			icon, ifnull(icon, '') != '' as has_icon, readability
+			icon, ifnull(icon, '') != '' as has_icon, readability, filter_rule
 		from feeds where id = ?
 	`, id).Scan(
 		&f.Id, &f.FolderId, &f.Title, &f.Link, &f.FeedLink,
-		&f.Icon, &f.HasIcon, &f.Readability,
+		&f.Icon, &f.HasIcon, &f.Readability, &f.FilterRule,
 	)
 	if err != nil {
 		if err != sql.ErrNoRows {

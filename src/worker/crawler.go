@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
@@ -138,6 +140,11 @@ func findFavicon(siteUrl, feedUrl string) (*[]byte, error) {
 
 func ConvertItems(items []parser.Item, feed storage.Feed) []storage.Item {
 	result := make([]storage.Item, len(items))
+	re, err := regexp.Compile(feed.FilterRule)
+	if err != nil {
+		log.Println("Bad regex:", err)
+		return result
+	}
 	for i, item := range items {
 		item := item
 		var audioURL *string = nil
@@ -148,6 +155,10 @@ func ConvertItems(items []parser.Item, feed storage.Feed) []storage.Item {
 		if item.ImageURL != "" {
 			imageURL = &item.ImageURL
 		}
+		status := storage.UNREAD
+		if re.Match([]byte(item.Title)) {
+			status = storage.READ
+		}
 		result[i] = storage.Item{
 			GUID:     item.GUID,
 			FeedId:   feed.Id,
@@ -155,7 +166,7 @@ func ConvertItems(items []parser.Item, feed storage.Feed) []storage.Item {
 			Link:     item.URL,
 			Content:  item.Content,
 			Date:     item.Date,
-			Status:   storage.UNREAD,
+			Status:   status,
 			ImageURL: imageURL,
 			AudioURL: audioURL,
 		}
