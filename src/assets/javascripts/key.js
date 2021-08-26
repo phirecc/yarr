@@ -258,7 +258,7 @@ document.addEventListener('keydown',function(event) {
     return
   }
   var keybindFunction = keybindings[event.key]
-  if (keybindFunction) {
+  if (keybindFunction && !event.altKey) {
     event.preventDefault()
     keybindFunction()
   }
