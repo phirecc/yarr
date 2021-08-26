@@ -203,7 +203,7 @@
                 </div>
                 <button class="toolbar-item ml-2"
                         @click="markItemsRead()"
-                        v-if="filterSelected == 'unread'"
+                        v-if="filterSelected == 'unread' && feedSelected.startsWith('feed')"
                         title="Mark All Read">
                     <span class="icon">{% inline "check.svg" %}</span>
                 </button>
