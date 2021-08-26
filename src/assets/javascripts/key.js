@@ -248,6 +248,9 @@ document.addEventListener('keydown',function(event) {
       let searchResults = document.querySelectorAll("#fuzzySearchResults > label")
       searchResults[vm.fuzzyItemSelected].click()
     }
+    else if (event.key == "Escape") {
+      vm.fuzzyEnabled = false
+    }
   }
   // Ignore while focused on text or
   // when using modifier keys (to not clash with browser behaviour)
