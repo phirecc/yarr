@@ -105,7 +105,7 @@ var shortcutFunctions = {
   },
   markAllRead: function() {
     // same condition as 'Mark all read button'
-    if (vm.filterSelected == 'unread'){
+    if (vm.filterSelected == 'unread' && vm.feedSelected.startsWith("feed")){
       vm.markItemsRead()
     }
   },
