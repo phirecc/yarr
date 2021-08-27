@@ -207,7 +207,7 @@ func (s *Server) handleFeedList(c *router.Context) {
 		result, err := worker.DiscoverFeed(form.Url)
 		switch {
 		case err != nil:
-			log.Printf("Faild to discover feed for %s: %s", form.Url, err)
+			log.Printf("Failed to discover feed for %s: %s", form.Url, err)
 			c.JSON(http.StatusOK, map[string]string{"status": "notfound"})
 		case len(result.Sources) > 0:
 			c.JSON(http.StatusOK, map[string]interface{}{"status": "multiple", "choice": result.Sources})
