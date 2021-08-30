@@ -402,8 +402,11 @@ select.form-control:not([multiple]):not([size]) {
 }
 
 .content a {
-  color: inherit;
   text-decoration: underline;
+}
+
+.text-muted a {
+  color: inherit;
 }
 
 .content blockquote {
@@ -416,14 +419,17 @@ select.form-control:not([multiple]):not([size]) {
 }
 .content h2 {
   font-size: 1.5rem;
+  text-decoration: underline;
 }
 .content h3 {
   font-size: 1.17rem;
+  text-decoration: underline;
 }
 .content h4,
 .content h5,
 .content h6 {
   font-size: 1rem;
+  text-decoration: underline;
 }
 
 /* theme: light */
