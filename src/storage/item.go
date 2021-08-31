@@ -89,7 +89,7 @@ func (s *Storage) CreateItems(items []Item) bool {
 			on conflict (feed_id, guid) do nothing`,
 			item.GUID, item.FeedId, item.Title, item.Link, item.Date,
 			item.Content, item.ImageURL, item.AudioURL,
-			now, UNREAD,
+			now, item.Status,
 		)
 		if err != nil {
 			log.Print(err)

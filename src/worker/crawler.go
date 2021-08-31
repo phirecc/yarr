@@ -156,7 +156,7 @@ func ConvertItems(items []parser.Item, feed storage.Feed) []storage.Item {
 			imageURL = &item.ImageURL
 		}
 		status := storage.UNREAD
-		if re.Match([]byte(item.Title)) {
+		if feed.FilterRule != "" && re.Match([]byte(item.Title)) {
 			status = storage.READ
 		}
 		result[i] = storage.Item{
