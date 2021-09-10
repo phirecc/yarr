@@ -179,6 +179,9 @@ var shortcutFunctions = {
   },
   goToFeed() {
     vm.feedSelected = "feed:" + vm.itemSelectedDetails.feed_id
+  },
+  refreshItems() {
+    vm.refreshItems(false)
   }
 }
 
@@ -206,6 +209,7 @@ var keybindings = {
   "0": shortcutFunctions.unselectFeed,
   "p": shortcutFunctions.openFuzzyFinder,
   "d": shortcutFunctions.goToFeed,
+  "c": shortcutFunctions.refreshItems,
 }
 
 function isTextBox(element) {
