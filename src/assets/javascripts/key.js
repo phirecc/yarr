@@ -244,7 +244,6 @@ document.addEventListener('keydown',function(event) {
         }
         searchResults[vm.fuzzyItemSelected].setAttribute("selected", true)
         searchResults[vm.fuzzyItemSelected].scrollIntoViewIfNeeded()
-        console.log(vm.fuzzyItemSelected)
       }
     }
     else if (event.key == "Enter") {
