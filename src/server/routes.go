@@ -48,6 +48,8 @@ func (s *Server) handler() http.Handler {
 	r.For("/api/feeds/errors", s.handleFeedErrors)
 	r.For("/api/feeds/:id/icon", s.handleFeedIcon)
 	r.For("/api/feeds/:id", s.handleFeed)
+	r.For("/api/tags", s.handleTagsList)
+	r.For("/api/tags/update/:feedId/:tags", s.handleTagsUpdate)
 	r.For("/api/items", s.handleItemList)
 	r.For("/api/items/:id", s.handleItem)
 	r.For("/api/settings", s.handleSettings)
@@ -190,6 +192,22 @@ func (s *Server) handleFeedIcon(c *router.Context) {
 	c.Out.Header().Set("Content-Type", icon.ctype)
 	c.Out.Header().Set("Etag", icon.etag)
 	c.Out.Write(icon.bytes)
+}
+
+func (s *Server) handleTagsList(c *router.Context) {
+	list := s.db.ListTags()
+	c.JSON(http.StatusOK, list)
+}
+
+func (s *Server) handleTagsUpdate(c *router.Context) {
+	feedId, err := strconv.Atoi(c.Vars["feedId"])
+	if err != nil {
+		c.Out.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+	tags := strings.Split(c.Vars["tags"], ",")
+	s.db.SetTags(feedId, tags)
 }
 
 func (s *Server) handleFeedList(c *router.Context) {

@@ -53,6 +53,14 @@
         return api('get', './api/feeds/errors').then(json)
       },
     },
+    tags: {
+      list: function() {
+        return api('get', './api/tags').then(json)
+      },
+      update: function(feedId, tags) {
+        return api('get', './api/tags/update/' + feedId + "/" + tags)
+      },
+    },
     folders: {
       list: function() {
         return api('get', './api/folders').then(json)

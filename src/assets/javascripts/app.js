@@ -181,6 +181,7 @@ Vue.component('relative-time', {
 var vm = new Vue({
   created: function() {
     this.refreshStats()
+      .then(this.refreshTags.bind(this))
       .then(this.refreshFeeds.bind(this))
       .then(this.refreshItems.bind(this, false))
 
@@ -211,9 +212,13 @@ var vm = new Vue({
       'fuzzySearchQuery': '',
       'fuzzyItemSelected': -1,
       'feedSelected': localStorage.feedSelected || "",
+      'tagSelected': localStorage.tagSelected || -1,
+      'tagColors': {},
       'feedListWidth': localStorage.feedListWidth || 300,
       'feedNewChoice': [],
       'feedNewChoiceSelected': '',
+      'feedTags': {},
+      'tagNames': {},
       'items': [],
       'itemsHasMore': true,
       'itemSelected': null,
@@ -292,6 +297,13 @@ var vm = new Vue({
     },
   },
   watch: {
+    'tagNames': function(newVal) {
+      Object.keys(newVal).forEach(x => {
+        if (!vm.tagColors[x]) {
+          vm.tagColors[x] = "hsl(" + Math.floor(Math.random()*360) + ", 90%, 33%)"
+        }
+      })
+    },
     'theme': {
       deep: true,
       handler: function(theme) {
@@ -375,6 +387,9 @@ var vm = new Vue({
     },
   },
   methods: {
+    matchesTags: function(feed) {
+      return this.tagSelected == -1 || this.feedTags[feed.id] != undefined && this.feedTags[feed.id].includes(this.tagSelected)
+    },
     refreshStats: function(loopMode) {
       return api.status().then(function(data) {
         if (loopMode && !vm.itemSelected) vm.refreshItems()
@@ -415,6 +430,14 @@ var vm = new Vue({
         query.oldest_first = true
       }
       return query
+    },
+    refreshTags: function() {
+      return Promise
+        .all([api.tags.list()])
+        .then(function(values) {
+          vm.feedTags = values[0]["feed_tags"]
+          vm.tagNames = values[0]["names"]
+        })
     },
     refreshFeeds: function() {
       return Promise
@@ -541,6 +564,19 @@ var vm = new Vue({
       if (newFilterRule) {
         api.feeds.update(feed.id, {filterRule: newFilterRule}).then(function() {
           feed.filter_rule = newFilterRule
+        })
+      }
+    },
+    setTag: function(feed) {
+      let oldTags = ""
+      if (vm.feedTags[feed.id]) {
+        vm.feedTags[feed.id].forEach(x => oldTags += vm.tagNames[x] + ',')
+        oldTags = oldTags.slice(0, -1)
+      }
+      let newTags = prompt('Enter tag', oldTags)
+      if (newTags) {
+        api.tags.update(feed.id, newTags).then(function() {
+          vm.refreshTags()
         })
       }
     },

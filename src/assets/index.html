@@ -71,6 +71,11 @@
                         Refresh Feeds
                     </button>
 
+                    <select class="form-select dropdown-item" v-model.number="tagSelected">
+                        <option value="-1"></option>
+                        <option v-for="(name, id, index) in tagNames" :value="id">{{name}}</option>
+                    </select>
+
                     <div class="dropdown-divider"></div>
 
                     <header class="dropdown-header">Theme</header>
@@ -165,12 +170,19 @@
                                                  && !(current.feed.id == feed.id)
                                                  && !filteredFeedStats[feed.id]
                                                  && (!itemSelectedDetails || itemSelectedDetails.feed_id != feed.id)}"
-                               v-for="feed in folder.feeds">
+                               v-for="feed in folder.feeds" v-if="matchesTags(feed)">
                             <input type="radio" name="feed" :value="'feed:'+feed.id" v-model="feedSelected">
                             <div class="selectgroup-label d-flex align-items-center w-100">
                                 <span class="icon mr-2" v-if="!feed.has_icon">{% inline "rss.svg" %}</span>
                                 <span class="icon mr-2" v-else><img :src="'./api/feeds/'+feed.id+'/icon'" alt="" loading="lazy"></span>
-                                <span class="flex-fill text-left text-truncate">{{ feed.title }}</span>
+                                <span class="flex-fill text-left text-truncate">
+                                    {{ feed.title }}
+                                </span>
+                                <div class="feedTags">
+                                    <span v-for="tag in feedTags[feed.id]" :style="{'background': tagColors[tag]}" @click="tagSelected = tag">
+                                        {{ tagNames[tag] }}
+                                    </span>
+                                </div>
                                 <span class="counter text-right">{{ filteredFeedStats[feed.id] || '' }}</span>
                                 <span class="icon flex-shrink-0 mx-2"
                                       :title="feed_errors[feed.id]"
@@ -233,6 +245,10 @@
                     <button class="dropdown-item" @click="renameFeed(current.feed)">
                         <span class="icon mr-1">{% inline "edit.svg" %}</span>
                         Rename
+                    </button>
+                    <button class="dropdown-item" @click="setTag(current.feed)">
+                        <span class="icon mr-1">{% inline "tag.svg" %}</span>
+                        Tag
                     </button>
                     <button class="dropdown-item" @click="setFilterRule(current.feed)">
                         <span class="icon mr-1">{% inline "filter.svg" %}</span>

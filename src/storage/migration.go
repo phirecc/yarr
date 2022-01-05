@@ -15,6 +15,7 @@ var migrations = []func(*sql.Tx) error{
 	m06_fill_missing_dates,
 	m07_add_feed_readability,
 	m08_add_feed_filter_rule,
+	m09_add_feed_tags,
 }
 
 var maxVersion = int64(len(migrations))
@@ -273,6 +274,31 @@ func m07_add_feed_readability(tx *sql.Tx) error {
 func m08_add_feed_filter_rule(tx *sql.Tx) error {
 	sql := `
 		alter table feeds add column filter_rule string default "";
+	`
+	_, err := tx.Exec(sql)
+	return err
+}
+
+func m09_add_feed_tags(tx *sql.Tx) error {
+	sql := `
+		create table if not exists tags (
+		 id             integer primary key autoincrement,
+		 name           text not null unique
+		);
+		create table if not exists feed_to_tag (
+		 id             integer primary key autoincrement,
+		 feed_id        references feeds(id) on delete cascade,
+		 tag_id         references tags(id) on delete cascade,
+		 unique(feed_id,tag_id)
+		);
+		create index if not exists idx_feed_to_tag_feed_id on feed_to_tag(feed_id);
+		create index if not exists idx_feed_to_tag_tag_id on feed_to_tag(tag_id);
+
+		create trigger remove_unused_tag
+		after delete on feed_to_tag when not exists (select 1 from feed_to_tag where tag_id = OLD.tag_id)
+		begin
+			delete from tags where id = OLD.tag_id;
+		end;
 	`
 	_, err := tx.Exec(sql)
 	return err

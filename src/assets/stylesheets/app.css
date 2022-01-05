@@ -538,6 +538,15 @@ a,
   z-index: 7;
 }
 
+.feedTags span {
+  font-size: 9px;
+  float: right;
+  color: white;
+  margin-left: 3px;
+  border-radius: 3px;
+  padding: 3px;
+}
+
 /* responsive layout
 
    tablet:
