@@ -61,7 +61,8 @@ type ItemFilter struct {
 	FeedID   *int64
 	Status   *ItemStatus
 	Search   *string
-	After  *int64
+	Tag      *int64
+	After    *int64
 }
 
 type MarkFilter struct {
@@ -131,6 +132,10 @@ func listQueryPredicate(filter ItemFilter, newestFirst bool) (string, []interfac
 
 		cond = append(cond, "i.search_rowid in (select rowid from search where search match ?)")
 		args = append(args, strings.Join(terms, " "))
+	}
+	if filter.Tag != nil {
+		cond = append(cond, "i.feed_id in (select feed_id from feed_to_tag where tag_id = ?)")
+		args = append(args, *filter.Tag)
 	}
 	if filter.After != nil {
 		compare := ">"

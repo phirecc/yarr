@@ -297,6 +297,10 @@ var vm = new Vue({
     },
   },
   watch: {
+    'tagSelected': function(newVal) {
+      this.refreshItems(false)
+      this.computeStats()
+    },
     'tagNames': function(newVal) {
       Object.keys(newVal).forEach(x => {
         if (!vm.tagColors[x]) {
@@ -428,6 +432,9 @@ var vm = new Vue({
       }
       if (!this.itemSortNewestFirst) {
         query.oldest_first = true
+      }
+      if (this.tagSelected != -1) {
+        query.tag = this.tagSelected
       }
       return query
     },
@@ -719,7 +726,7 @@ var vm = new Vue({
 
       for (var i = 0; i < this.feeds.length; i++) {
         var feed = this.feeds[i]
-        if (!this.feedStats[feed.id]) continue
+        if (!this.feedStats[feed.id] || !this.matchesTags(feed)) continue
 
         var n = vm.feedStats[feed.id][filter] || 0
 
