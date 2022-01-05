@@ -537,7 +537,7 @@ var vm = new Vue({
       }
     },
     setFilterRule: function(feed) {
-      var newFilterRule = prompt('Enter fitler rule', feed.filter_rule)
+      let newFilterRule = prompt('Enter fitler rule', feed.filter_rule)
       if (newFilterRule) {
         api.feeds.update(feed.id, {filterRule: newFilterRule}).then(function() {
           feed.filter_rule = newFilterRule
