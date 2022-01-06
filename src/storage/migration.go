@@ -16,6 +16,7 @@ var migrations = []func(*sql.Tx) error{
 	m07_add_feed_readability,
 	m08_add_feed_filter_rule,
 	m09_add_feed_tags,
+	m10_add_parent_tags,
 }
 
 var maxVersion = int64(len(migrations))
@@ -296,6 +297,21 @@ func m09_add_feed_tags(tx *sql.Tx) error {
 
 		create trigger remove_unused_tag
 		after delete on feed_to_tag when not exists (select 1 from feed_to_tag where tag_id = OLD.tag_id)
+		begin
+			delete from tags where id = OLD.tag_id;
+		end;
+	`
+	_, err := tx.Exec(sql)
+	return err
+}
+
+func m10_add_parent_tags(tx *sql.Tx) error {
+	sql := `
+		alter table tags add column parent_id references tags(id) on delete set NULL default NULL;
+
+		drop trigger remove_unused_tag;
+		create trigger remove_unused_tag
+		after delete on feed_to_tag when not exists (select 1 from feed_to_tag where tag_id = OLD.tag_id UNION select 1 from tags where parent_id = OLD.tag_id)
 		begin
 			delete from tags where id = OLD.tag_id;
 		end;

@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"database/sql"
 	"log"
 	"strings"
 )
@@ -8,13 +9,24 @@ import (
 type Tags struct {
 	Names    map[int]string `json:"names"`
 	FeedTags map[int][]int  `json:"feed_tags"`
+	Parents  map[int]int    `json:"parents"`
 }
 
 func (s *Storage) ListTags() Tags {
+	parents, err := s.db.Query(`
+		select id, parent_id from tags where parent_id not NULL
+	`)
+	var res Tags
+	res.Parents = make(map[int]int)
+	for parents.Next() {
+		var id int
+		var parent int
+		err = parents.Scan(&id, &parent)
+		res.Parents[id] = parent
+	}
 	rows, err := s.db.Query(`
 		select id, name from tags
 	`)
-	var res Tags
 	res.Names = make(map[int]string)
 	for rows.Next() {
 		var id int
@@ -88,6 +100,19 @@ func (s *Storage) SetTags(feedId int, tags []string) bool {
 				return false
 			}
 		}
+	}
+	return true
+}
+
+func (s *Storage) SetParentTag(tagId, parentId int) bool {
+	var pId sql.NullInt64
+	if parentId != -1 {
+		pId.Int64 = int64(parentId)
+		pId.Valid = true
+	}
+	if _, err := s.db.Exec(`update tags set parent_id = ? where id = ?`, pId, tagId); err != nil {
+		log.Println(err)
+		return false
 	}
 	return true
 }

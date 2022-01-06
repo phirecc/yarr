@@ -134,8 +134,8 @@ func listQueryPredicate(filter ItemFilter, newestFirst bool) (string, []interfac
 		args = append(args, strings.Join(terms, " "))
 	}
 	if filter.Tag != nil {
-		cond = append(cond, "i.feed_id in (select feed_id from feed_to_tag where tag_id = ?)")
-		args = append(args, *filter.Tag)
+		cond = append(cond, "i.feed_id in (select feed_id from feed_to_tag where tag_id = ? or tag_id in (select id from tags where parent_id = ?))")
+		args = append(args, *filter.Tag, *filter.Tag)
 	}
 	if filter.After != nil {
 		compare := ">"

@@ -70,12 +70,16 @@
                         <span class="icon mr-1">{% inline "rotate-cw.svg" %}</span>
                         Refresh Feeds
                     </button>
+                    <div class="dropdown-divider"></div>
 
                     <select class="form-select dropdown-item" v-model.number="tagSelected">
                         <option value="-1"></option>
                         <option v-for="(name, id, index) in tagNames" :value="id">{{name}}</option>
                     </select>
-
+                    <button class="dropdown-item" @click="showSettings('manage-tags')">
+                        <span class="icon mr-1">{% inline "tag.svg" %}</span>
+                        Tags
+                    </button>
                     <div class="dropdown-divider"></div>
 
                     <header class="dropdown-header">Theme</header>
@@ -418,6 +422,21 @@
                     </div>
                     <button class="btn btn-block btn-default mt-3" :class="{loading: loading.newfeed}" type="submit">Add</button>
                 </form>
+            </div>
+            <div v-if="settings=='manage-tags'">
+                <p class="cursor-default"><b>Tags</b></p>
+                <table class="table table-borderless table-sm table-compact m-0">
+                    <tr><td><b>Name</b></td><td><b>Parent</b></td></tr>
+                    <tr v-for="(name, id, index) in tagNames">
+                        <td>{{name}}</td>
+                        <td>
+                            <select class="form-select dropdown-item" @change="updateParentTag(id, $event.target.value)" v-model.number="tagParents[id]">
+                                <option value="-1"></option>
+                                <option v-for="(name1, id1, index1) in tagNames" v-if="id != id1" :value="id1">{{name1}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div v-else-if="settings=='shortcuts'">
                 <p class="cursor-default"><b>Keyboard Shortcuts</b></p>

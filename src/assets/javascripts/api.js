@@ -60,6 +60,9 @@
       update: function(feedId, tags) {
         return api('get', './api/tags/update/' + feedId + "/" + tags)
       },
+      updateParent: function(tagId, parentId) {
+        return api('get', './api/tags/updateParent/' + tagId + "/" + parentId)
+      },
     },
     folders: {
       list: function() {

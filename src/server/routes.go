@@ -50,6 +50,7 @@ func (s *Server) handler() http.Handler {
 	r.For("/api/feeds/:id", s.handleFeed)
 	r.For("/api/tags", s.handleTagsList)
 	r.For("/api/tags/update/:feedId/:tags", s.handleTagsUpdate)
+	r.For("/api/tags/updateParent/:tagId/:parentId", s.handleParentTagUpdate)
 	r.For("/api/items", s.handleItemList)
 	r.For("/api/items/:id", s.handleItem)
 	r.For("/api/settings", s.handleSettings)
@@ -208,6 +209,22 @@ func (s *Server) handleTagsUpdate(c *router.Context) {
 	}
 	tags := strings.Split(c.Vars["tags"], ",")
 	s.db.SetTags(feedId, tags)
+}
+
+func (s *Server) handleParentTagUpdate(c *router.Context) {
+	tagId, err := strconv.Atoi(c.Vars["tagId"])
+	if err != nil {
+		c.Out.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+	parentId, err := strconv.Atoi(c.Vars["parentId"])
+	if err != nil {
+		c.Out.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
+		return
+	}
+	s.db.SetParentTag(tagId, parentId)
 }
 
 func (s *Server) handleFeedList(c *router.Context) {

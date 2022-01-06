@@ -391,8 +391,26 @@ var vm = new Vue({
     },
   },
   methods: {
+    updateParentTag: function(tagId, parentId) {
+      api.tags.updateParent(tagId, parentId).then(function() {
+        vm.tagParents[tagId] = parentId
+      })
+    },
     matchesTags: function(feed) {
-      return this.tagSelected == -1 || this.feedTags[feed.id] != undefined && this.feedTags[feed.id].includes(this.tagSelected)
+      if (this.tagSelected == -1) {
+        return true
+      }
+      else if (this.feedTags[feed.id] != undefined) {
+        if (this.feedTags[feed.id].includes(this.tagSelected)) {
+          return true
+        }
+        else {
+          for (const tag of this.feedTags[feed.id]) {
+            if (this.tagParents[tag] == this.tagSelected) return true
+          }
+        }
+      }
+      return false
     },
     refreshStats: function(loopMode) {
       return api.status().then(function(data) {
@@ -444,6 +462,7 @@ var vm = new Vue({
         .then(function(values) {
           vm.feedTags = values[0]["feed_tags"]
           vm.tagNames = values[0]["names"]
+          vm.tagParents = values[0]["parents"]
         })
     },
     refreshFeeds: function() {
