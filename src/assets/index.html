@@ -318,6 +318,8 @@
                             <small class="flex-fill text-truncate mr-1">
                                 {{ feedsById[item.feed_id].title }}
                             </small>
+                            <span class="icon mr-2" v-if="!feedsById[item.feed_id].has_icon">{% inline "rss.svg" %}</span>
+                            <span class="icon mr-2" v-else><img :src="'./api/feeds/'+item.feed_id+'/icon'" alt="" loading="lazy"></span>
                             <small class="flex-shrink-0"><relative-time v-bind:title="formatDate(item.date)" :val="item.date"/></small>
                         </div>
                         <div>{{ item.title || 'untitled' }}</div>
