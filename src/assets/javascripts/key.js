@@ -182,6 +182,9 @@ var shortcutFunctions = {
   },
   refreshItems() {
     vm.refreshItems(false)
+  },
+  tag() {
+    vm.setTag(vm.current.feed)
   }
 }
 
@@ -210,6 +213,7 @@ var keybindings = {
   "p": shortcutFunctions.openFuzzyFinder,
   "d": shortcutFunctions.goToFeed,
   "c": shortcutFunctions.refreshItems,
+  "t": shortcutFunctions.tag,
 }
 
 function isTextBox(element) {

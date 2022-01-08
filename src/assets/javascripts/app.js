@@ -594,6 +594,7 @@ var vm = new Vue({
       }
     },
     setTag: function(feed) {
+      if (Object.keys(feed).length == 0) return
       let oldTags = ""
       if (vm.feedTags[feed.id]) {
         vm.feedTags[feed.id].forEach(x => oldTags += vm.tagNames[x] + ',')
