@@ -120,7 +120,13 @@ func listQueryPredicate(filter ItemFilter, newestFirst bool) (string, []interfac
 		args = append(args, *filter.FeedID)
 	}
 	if filter.Status != nil {
-		cond = append(cond, "i.status = ?")
+		var buf string
+		var bufSuffix string
+		if *filter.Status == UNREAD {
+			buf = "(i.status = " + fmt.Sprint(STARRED) + " or "
+			bufSuffix = ")"
+		}
+		cond = append(cond, buf+"i.status = ?"+bufSuffix)
 		args = append(args, *filter.Status)
 	}
 	if filter.Search != nil {
