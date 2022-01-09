@@ -57,7 +57,6 @@ func (s *Storage) ListTags() Tags {
 }
 
 func (s *Storage) SetTags(feedId int, tags []string) bool {
-	log.Println(tags)
 	var args []interface{}
 	args = append(args, feedId)
 	for _, tag := range tags {
@@ -77,7 +76,6 @@ func (s *Storage) SetTags(feedId int, tags []string) bool {
 		return false
 	}
 	for _, tag := range tags {
-		log.Println(tag)
 		res := stmt.QueryRow(tag)
 		var tagId int64
 		if err = res.Scan(&tagId); err != nil {
