@@ -7,6 +7,15 @@ It is written in Go with the frontend in Vue.js. The storage is backed by SQLite
 
 ![screenshot](etc/promo.png)
 
+## changes in this fork
+
+- A ctrl-p-like finder for feeds
+- Tagging of feeds
+- Improved item-feed navigation
+- Use localstorage for most options as opposed to the default server-sided storage
+- Filter rules to filter-out items matching a regex
+- Various small modifications to match my personal preference
+
 ## usage
 
 The latest prebuilt binaries for Linux/MacOS/Windows are available
