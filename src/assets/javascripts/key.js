@@ -185,6 +185,9 @@ var shortcutFunctions = {
   },
   tag() {
     vm.setTag(vm.current.feed)
+  },
+  clearItemSelected() {
+    vm.itemSelected = null
   }
 }
 
@@ -214,6 +217,7 @@ var keybindings = {
   "d": shortcutFunctions.goToFeed,
   "c": shortcutFunctions.refreshItems,
   "t": shortcutFunctions.tag,
+  ".": shortcutFunctions.clearItemSelected,
 }
 
 function isTextBox(element) {
