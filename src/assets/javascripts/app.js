@@ -214,7 +214,7 @@ var vm = new Vue({
       'feedSelected': localStorage.feedSelected || "",
       'tagSelected': localStorage.tagSelected || -1,
       'tagColors': {},
-      'feedListWidth': localStorage.feedListWidth || 300,
+      'feedListWidth': parseInt(localStorage.feedListWidth) || 300,
       'feedNewChoice': [],
       'feedNewChoiceSelected': '',
       'feedTags': {},
@@ -226,7 +226,7 @@ var vm = new Vue({
       'itemSelectedReadability': '',
       'itemSearch': '',
       'itemSortNewestFirst': localStorage.itemSortNewestFirst || true,
-      'itemListWidth': localStorage.itemListWidth || 300,
+      'itemListWidth': parseInt(localStorage.itemListWidth) || 300,
 
       'filteredFeedStats': {},
       'filteredFolderStats': {},
