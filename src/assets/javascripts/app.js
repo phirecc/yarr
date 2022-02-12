@@ -322,7 +322,7 @@ var vm = new Vue({
       handler: debounce(function() {
         var title = TITLE
         var unreadCount = Object.values(this.feedStats).reduce(function(acc, stat) {
-          return acc + stat.unread
+          return acc + stat.unread + stat.starred
         }, 0)
         if (unreadCount) {
           title += ' ('+unreadCount+')'
@@ -749,6 +749,7 @@ var vm = new Vue({
         if (!this.feedStats[feed.id] || !this.matchesTags(feed)) continue
 
         var n = vm.feedStats[feed.id][filter] || 0
+        if (filter == "unread") n += vm.feedStats[feed.id]["starred"]
 
         if (!statsFolders[feed.folder_id]) statsFolders[feed.folder_id] = 0
 
