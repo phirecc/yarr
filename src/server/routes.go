@@ -254,7 +254,11 @@ func (s *Server) handleFeedList(c *router.Context) {
 				result.FeedLink,
 				form.FolderID,
 			)
-			s.db.CreateItems(worker.ConvertItems(result.Feed.Items, *feed))
+			items := worker.ConvertItems(result.Feed.Items, *feed)
+			if len(items) > 0 {
+				s.db.CreateItems(items)
+				s.db.SetFeedSize(feed.Id, len(items))
+			}
 			s.worker.FindFeedFavicon(*feed)
 
 			c.JSON(http.StatusOK, map[string]interface{}{
@@ -505,14 +509,13 @@ func (s *Server) handlePageCrawl(c *router.Context) {
 		return
 	}
 
-	res, err := http.Get(url)
+	body, err := worker.GetBody(url)
 	if err != nil {
 		log.Print(err)
 		c.Out.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	defer res.Body.Close()
-	content, err := readability.ExtractContent(res.Body)
+	content, err := readability.ExtractContent(strings.NewReader(body))
 	if err != nil {
 		log.Print(err)
 		c.Out.WriteHeader(http.StatusNoContent)

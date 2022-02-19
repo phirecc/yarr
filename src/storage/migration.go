@@ -17,6 +17,7 @@ var migrations = []func(*sql.Tx) error{
 	m08_add_feed_filter_rule,
 	m09_add_feed_tags,
 	m10_add_parent_tags,
+	m11_add_feed_size,
 }
 
 var maxVersion = int64(len(migrations))
@@ -315,6 +316,17 @@ func m10_add_parent_tags(tx *sql.Tx) error {
 		begin
 			delete from tags where id = OLD.tag_id;
 		end;
+	`
+	_, err := tx.Exec(sql)
+	return err
+}
+
+func m11_add_feed_size(tx *sql.Tx) error {
+	sql := `
+		create table if not exists feed_sizes (
+		 feed_id        references feeds(id) on delete cascade unique,
+		 size           integer not null default 0
+		);
 	`
 	_, err := tx.Exec(sql)
 	return err

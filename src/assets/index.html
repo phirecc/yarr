@@ -370,6 +370,12 @@
                     <span class="icon">{% inline "external-link.svg" %}</span>
                 </a>
                 <div class="flex-grow-1"></div>
+                <button class="toolbar-item" title="Previous Article">
+                    <span class="icon">{% inline "chevron-left.svg" %}</span>
+                </button>
+                <button class="toolbar-item" title="Next Article">
+                    <span class="icon">{% inline "chevron-right.svg" %}</span>
+                </button>
                 <button class="toolbar-item" @click="itemSelected=null" title="Close Article">
                     <span class="icon">{% inline "x.svg" %}</span>
                 </button>
@@ -400,7 +406,7 @@
                 <p class="cursor-default"><b>New Feed</b></p>
                 <form action="" @submit.prevent="createFeed(event)" class="mt-4">
                     <label for="feed-url">URL</label>
-                    <input id="feed-url" name="url" type="url" class="form-control" required autocomplete="off" :readonly="feedNewChoice.length > 0">
+                    <input id="feed-url" name="url" type="url" class="form-control" required autocomplete="off" :readonly="feedNewChoice.length > 0" placeholder="https://example.com/feed" v-focus>
                     <label for="feed-folder" class="mt-3 d-block">
                         Folder
                         <a href="#" class="float-right text-decoration-none" @click.prevent="createNewFeedFolder()">new folder</a>

@@ -11,18 +11,23 @@ import (
 	"time"
 
 	"github.com/nkanaev/yarr/src/content/htmlutil"
+	"golang.org/x/net/html/charset"
 )
 
 var UnknownFormat = errors.New("unknown feed format")
 
-type processor func(r io.Reader) (*Feed, error)
+type feedProbe struct {
+	feedType string
+	callback func(r io.Reader) (*Feed, error)
+	encoding string
+}
 
-func sniff(lookup string) (string, processor) {
+func sniff(lookup string) (out feedProbe) {
 	lookup = strings.TrimSpace(lookup)
 	lookup = strings.TrimLeft(lookup, "\x00\xEF\xBB\xBF\xFE\xFF")
 
-	if len(lookup) < 0 {
-		return "", nil
+	if len(lookup) == 0 {
+		return
 	}
 
 	switch lookup[0] {
@@ -33,24 +38,42 @@ func sniff(lookup string) (string, processor) {
 			if token == nil {
 				break
 			}
+
+			// check <?xml encoding="ENCODING" ?>
+			if el, ok := token.(xml.ProcInst); ok && el.Target == "xml" {
+				out.encoding = strings.ToLower(procInst("encoding", string(el.Inst)))
+			}
+
 			if el, ok := token.(xml.StartElement); ok {
 				switch el.Name.Local {
 				case "rss":
-					return "rss", ParseRSS
+					out.feedType = "rss"
+					out.callback = ParseRSS
+					return
 				case "RDF":
-					return "rdf", ParseRDF
+					out.feedType = "rdf"
+					out.callback = ParseRDF
+					return
 				case "feed":
-					return "atom", ParseAtom
+					out.feedType = "atom"
+					out.callback = ParseAtom
+					return
 				}
 			}
 		}
 	case '{':
-		return "json", ParseJSON
+		out.feedType = "json"
+		out.callback = ParseJSON
+		return
 	}
-	return "", nil
+	return
 }
 
 func Parse(r io.Reader) (*Feed, error) {
+	return ParseWithEncoding(r, "")
+}
+
+func ParseWithEncoding(r io.Reader, fallbackEncoding string) (*Feed, error) {
 	lookup := make([]byte, 2048)
 	n, err := io.ReadFull(r, lookup)
 	switch {
@@ -63,16 +86,40 @@ func Parse(r io.Reader) (*Feed, error) {
 		r = io.MultiReader(bytes.NewReader(lookup), r)
 	}
 
-	_, callback := sniff(string(lookup))
-	if callback == nil {
+	out := sniff(string(lookup))
+	if out.feedType == "" {
 		return nil, UnknownFormat
 	}
 
-	feed, err := callback(r)
+	if out.encoding == "" && fallbackEncoding != "" {
+		r, err = charset.NewReaderLabel(fallbackEncoding, r)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if (out.feedType != "json") && (out.encoding == "" || out.encoding == "utf-8") {
+		// XML decoder will not rely on custom CharsetReader (see `xmlDecoder`)
+		// to handle invalid xml characters.
+		// Assume input is already UTF-8 and do the cleanup here.
+		r = NewSafeXMLReader(r)
+	}
+
+	feed, err := out.callback(r)
 	if feed != nil {
 		feed.cleanup()
 	}
 	return feed, err
+}
+
+func ParseAndFix(r io.Reader, baseURL, fallbackEncoding string) (*Feed, error) {
+	feed, err := ParseWithEncoding(r, fallbackEncoding)
+	if err != nil {
+		return nil, err
+	}
+	feed.TranslateURLs(baseURL)
+	feed.SetMissingDatesTo(time.Now())
+	return feed, nil
 }
 
 func (feed *Feed) cleanup() {
