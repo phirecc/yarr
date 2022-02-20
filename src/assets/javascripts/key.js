@@ -238,7 +238,7 @@ document.addEventListener('keydown',function(event) {
       let delta = event.key == "ArrowUp" ? -1 : 1
       event.preventDefault()
       vm.fuzzyItemSelected += delta
-      let searchResults = document.querySelectorAll("#fuzzySearchResults > label")
+      let searchResults = document.querySelectorAll("#fuzzySearchResults > label:not([style*='display: none;'])")
       if (prev > -1) {
         searchResults[prev].setAttribute("selected", false)
       }
@@ -256,7 +256,7 @@ document.addEventListener('keydown',function(event) {
     }
     else if (event.key == "Enter") {
       if (vm.fuzzyItemSelected == -1) vm.fuzzyItemSelected = 0
-      let searchResults = document.querySelectorAll("#fuzzySearchResults > label")
+      let searchResults = document.querySelectorAll("#fuzzySearchResults > label:not([style*='display: none;'])")
       searchResults[vm.fuzzyItemSelected].click()
     }
     else if (event.key == "Escape") {

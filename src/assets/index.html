@@ -20,7 +20,7 @@
             <div style="height: 100%;">
                 <input id="fuzzySearch" autofocus style="width: 100%; border-top: 1px solid #dee2e6!important; border-right: 1px solid #dee2e6!important; border-left: 1px solid #dee2e6!important" type="" class="d-block toolbar-search" v-model="fuzzySearchQuery" @keydown.enter="$event.target.blur()">
                 <div id="fuzzySearchResults" style="border: 1px solid #dee2e6!important; background-color: white; overflow: auto; height: 100%;">
-                    <label class="selectgroup" v-for="feed in fuzzyFeeds">
+                    <label class="selectgroup" v-for="feed in feeds" v-show="fuzzyFeedsHide[feed.id] != true">
                         <input type="radio" name="feed" :value="'feed:'+feed.id" v-model="feedSelected">
                         <div class="selectgroup-label d-flex align-items-center w-100">
                             <span class="icon mr-2" v-if="!feed.has_icon">{% inline "rss.svg" %}</span>

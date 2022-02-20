@@ -2,6 +2,24 @@
 
 var TITLE = document.title
 
+var fuzzySearch = function (needle, haystack) {
+  if (needle.length > haystack.length) {
+    return false
+  }
+  if (needle.length === haystack.length) {
+    return needle === haystack
+  }
+  outer: for (var i = 0, j = 0; i < needle.length; i++) {
+    while (j < haystack.length) {
+      if (haystack.charCodeAt(j++) === needle.charCodeAt(i)) {
+        continue outer
+      }
+    }
+    return false
+  }
+  return true
+}
+
 var debounce = function(callback, wait) {
   var timeout
   return function() {
@@ -213,7 +231,7 @@ var vm = new Vue({
       'filterSelected': localStorage.filterSelected || "",
       'folders': [],
       'feeds': [],
-      'fuzzyFeeds': [],
+      'fuzzyFeedsHide': [],
       'fuzzyEnabled': false,
       'fuzzySearchQuery': '',
       'fuzzyItemSelected': -1,
@@ -369,15 +387,16 @@ var vm = new Vue({
       this.refreshItems()
     }, 500),
     'fuzzySearchQuery': function(newVal, oldVal) {
+      let buf = {}
       vm.fuzzyItemSelected = -1
-      vm.fuzzyFeeds = []
-      // let r = new RegExp(newVal, "i")
-      this.feeds.forEach(feed => {
-        // if (feed.title.match(r)) {
-        if (feed.title.toUpperCase().includes(newVal.toUpperCase())) {
-          this.fuzzyFeeds.push(feed)
-        }
-      })
+      if (newVal.length > 0) {
+        this.feeds.forEach(feed => {
+          if (!fuzzySearch(newVal.toUpperCase(), feed.title.toUpperCase())) {
+            buf[feed.id] = true
+          }
+        })
+      }
+      vm.fuzzyFeedsHide = buf
     },
     'itemSortNewestFirst': function(newVal, oldVal) {
       if (oldVal === undefined) return  // do nothing, initial setup
