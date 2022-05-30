@@ -68,6 +68,7 @@ type ItemFilter struct {
 type MarkFilter struct {
 	FolderID *int64
 	FeedID   *int64
+	Search   *string
 }
 
 func (s *Storage) CreateItems(items []Item) bool {
@@ -225,7 +226,7 @@ func (s *Storage) UpdateItemStatus(item_id int64, status ItemStatus) bool {
 }
 
 func (s *Storage) MarkItemsRead(filter MarkFilter) bool {
-	predicate, args := listQueryPredicate(ItemFilter{FolderID: filter.FolderID, FeedID: filter.FeedID}, false)
+	predicate, args := listQueryPredicate(ItemFilter{FolderID: filter.FolderID, FeedID: filter.FeedID, Search: filter.Search}, false)
 	query := fmt.Sprintf(`
 		update items as i set status = %d
 		where %s and i.status != %d

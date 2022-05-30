@@ -398,6 +398,9 @@ func (s *Server) handleItemList(c *router.Context) {
 		if feedID, err := c.QueryInt64("feed_id"); err == nil {
 			filter.FeedID = &feedID
 		}
+		if search := c.Req.URL.Query().Get("search"); len(search) != 0 {
+			filter.Search = &search
+		}
 		s.db.MarkItemsRead(filter)
 		c.Out.WriteHeader(http.StatusOK)
 	} else {
