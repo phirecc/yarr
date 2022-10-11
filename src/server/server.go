@@ -3,16 +3,18 @@ package server
 import (
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/nkanaev/yarr/src/storage"
 	"github.com/nkanaev/yarr/src/worker"
 )
 
 type Server struct {
-	Addr   string
-	db     *storage.Storage
-	worker *worker.Worker
-	cache  map[string]interface{}
+	Addr        string
+	db          *storage.Storage
+	worker      *worker.Worker
+	cache       map[string]interface{}
+	cache_mutex *sync.Mutex
 
 	BasePath string
 
@@ -26,10 +28,11 @@ type Server struct {
 
 func NewServer(db *storage.Storage, addr string) *Server {
 	return &Server{
-		db:     db,
-		Addr:   addr,
-		worker: worker.NewWorker(db),
-		cache:  make(map[string]interface{}),
+		db:          db,
+		Addr:        addr,
+		worker:      worker.NewWorker(db),
+		cache:       make(map[string]interface{}),
+		cache_mutex: &sync.Mutex{},
 	}
 }
 

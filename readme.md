@@ -23,35 +23,18 @@ The latest prebuilt binaries for Linux/MacOS/Windows are available
 
 ### macos
 
-Download `yarr-*-macos64.zip`, unzip it, place `yarr.app` in `/Applications` folder.
-To open the app follow the instructions provided [here][macos-open] or run the command below:
-
-    xattr -d com.apple.quarantine /Applications/yarr.app
+Download `yarr-*-macos64.zip`, unzip it, place `yarr.app` in `/Applications` folder, [open the app][macos-open].
 
 [macos-open]: https://support.apple.com/en-gb/guide/mac-help/mh40616/mac
 
 ### windows
 
-Download `yarr-*-windows32.zip`, unzip it, open `yarr.exe`
+Download `yarr-*-windows64.zip`, unzip it, open `yarr.exe`
 
 ### linux
 
-The Linux version doesn't come with the desktop environment integration.
-For easy access on DE it is recommended to create a desktop menu entry by
-by following the steps below:
-
-    unzip -x yarr*.zip
-    sudo mv yarr /usr/local/bin/yarr
-    sudo nano /usr/local/share/applications/yarr.desktop
-
-and pasting the content:
-
-    [Desktop Entry]
-    Name=yarr
-    Exec=/usr/local/bin/yarr -open
-    Icon=rss
-    Type=Application
-    Categories=Internet;
+Download `yarr-*-linux64.zip`, unzip it, place `yarr` in `$HOME/.local/bin`
+and run [the script](etc/install-linux.sh).
 
 For self-hosting, see `yarr -h` for auth, tls & server configuration flags.
 For building from source code, see [build.md](build.md)
